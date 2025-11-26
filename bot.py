@@ -43,9 +43,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
+    app = ApplicationBuilder().token(config.TELEGRAM_BOT_TOKEN).build()
+
+    # Đăng ký handler các lệnh
     app.add_handler(CommandHandler("start", start))
-    app.run_polling()
+    app.add_handler(CallbackQueryHandler(handle_web_app_data, pattern="^webapp_data$"))
+    app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, handle_web_app_data))
+
+    # Chạy bot
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
 if __name__ == "__main__":
