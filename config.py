@@ -1,8 +1,13 @@
 # config.py
 import os
 
-# Đọc token từ biến môi trường trên Render
-TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+"""
+File này chỉ lấy biến môi trường từ Render / máy local.
+Bạn KHÔNG ghi token thẳng vào code nữa.
+"""
 
-# Nếu sau này cần thêm biến khác thì thêm bên dưới
-# WEBAPP_URL = os.environ.get("WEBAPP_URL", "")
+# Token bot Telegram (đặt trong Environment: TELEGRAM_BOT_TOKEN)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+# URL webapp (đặt trong Environment: WEBAPP_URL)
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://example.com")  # tạm default cho local
