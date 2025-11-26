@@ -1,4 +1,6 @@
 import logging
+from config import TELEGRAM_BOT_TOKEN
+from telegram.ext import ApplicationBuilder
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import config
@@ -41,7 +43,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    app = ApplicationBuilder().token(config.BOT_TOKEN).build()
+app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.run_polling()
 
