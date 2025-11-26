@@ -1,5 +1,8 @@
 # bot.py
 import logging
+import hmac
+import hashlib
+import urllib.parse
 from typing import Final
 
 from telegram import (
@@ -25,21 +28,52 @@ logger = logging.getLogger(__name__)
 
 TOKEN: Final[str] = config.TELEGRAM_BOT_TOKEN
 WEBAPP_URL: Final[str] = config.WEBAPP_URL
+CREDIT_SECRET: Final[str] = config.CREDIT_SECRET  # chuỗi bí mật dùng để ký
+
+
+def build_signed_webapp_url(tg_id: str, username: str | None) -> str:
+    """
+    Tạo URL kèm query + chữ ký HMAC để webapp tin được đây là user thật.
+    """
+    if username is None:
+        username = ""
+
+    # payload đơn giản: "tg_id:username"
+    payload = f"{tg_id}:{username}"
+
+    sig = hmac.new(
+        CREDIT_SECRET.encode("utf-8"),
+        payload.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+
+    query = {
+        "tg_id": tg_id,
+        "username": username,
+        "sig": sig,
+    }
+    return WEBAPP_URL.rstrip("/") + "?" + urllib.parse.urlencode(query)
 
 
 # ====== HANDLERS ======
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Lệnh /start: gửi nút mở webapp."""
+    """Lệnh /start: gửi nút mở webapp có ký user."""
     if not WEBAPP_URL:
         await update.message.reply_text("WEBAPP_URL chưa được cấu hình.")
         return
+
+    user = update.effective_user
+    tg_id = str(user.id)
+    username = user.username
+
+    full_url = build_signed_webapp_url(tg_id, username)
 
     keyboard = [
         [
             InlineKeyboardButton(
                 text="⛏ Mở game đào dầu",
-                web_app=WebAppInfo(url=WEBAPP_URL),
+                web_app=WebAppInfo(url=full_url),
             )
         ]
     ]
