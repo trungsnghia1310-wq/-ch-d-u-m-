@@ -1,11 +1,12 @@
+# webapp_main.py
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from pathlib import Path
+from typing import Optional, List
 import sqlite3
 import time
-from typing import Optional, List
 
 BASE_DIR = Path(__file__).parent
 DB_PATH = BASE_DIR / "withdraws.sqlite3"
@@ -65,7 +66,7 @@ class WithdrawRequestOut(BaseModel):
 
 
 @app.post("/api/withdraw", response_model=WithdrawRequestOut)
-def create_withdraw(req: WithdrawRequestIn):
+async def create_withdraw(req: WithdrawRequestIn):
     # validate basic rules: min 200 xu, phone 84...
     if req.amount_xu < 200:
         raise HTTPException(status_code=400, detail="Min rút là 200 Xu")
@@ -88,7 +89,8 @@ def create_withdraw(req: WithdrawRequestIn):
     conn.commit()
     new_id = cur.lastrowid
     cur.execute(
-        "SELECT id, amount_xu, phone, status, created_at FROM withdraw_requests WHERE id = ?",
+        "SELECT id, amount_xu, phone, status, created_at "
+        "FROM withdraw_requests WHERE id = ?",
         (new_id,),
     )
     row = cur.fetchone()
@@ -97,7 +99,7 @@ def create_withdraw(req: WithdrawRequestIn):
 
 
 @app.get("/api/withdraw-history", response_model=List[WithdrawRequestOut])
-def withdraw_history(tg_id: str = Query(..., description="Telegram user id")):
+async def withdraw_history(tg_id: str = Query(..., description="Telegram user id")):
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
