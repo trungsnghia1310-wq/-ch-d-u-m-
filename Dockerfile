@@ -1,15 +1,16 @@
 FROM python:3.12-slim
 
+# Không cần venv trong container cho đỡ rối
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Cài đặt các package hệ thống cần thiết (nếu bot dùng chrome thì thêm sau)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
+# Cài thư viện
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy code
 COPY . .
 
-CMD ["python", "bot.py"]
+# Chạy FastAPI bằng uvicorn, không dùng "fastapi run" nữa
+CMD ["uvicorn", "webapp_main:app", "--host", "0.0.0.0", "--port", "8000"]
