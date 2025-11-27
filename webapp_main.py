@@ -128,6 +128,7 @@ def row_to_player_dict(row: sqlite3.Row) -> Dict[str, Any]:
         "rig_level": row["rig_level"],
         "last_mine_at_ms": row["last_mine_at_ms"],
     }
+    FEE_RATE = 0.01   # phí 1% mỗi lần quy đổi
 
 
 # ============ MODELS ============
@@ -165,6 +166,12 @@ class MineIn(BaseModel):
 class UpgradeIn(BaseModel):
     tg_id: str
     username: Optional[str] = None
+
+class ConvertIn(BaseModel):
+    tg_id: str
+    username: Optional[str] = None
+    direction: str = Field(..., description="oil_to_xu hoặc xu_to_oil")
+    amount: float = Field(..., gt=0)    
 
 
 # ============ API GAME ============
@@ -273,6 +280,78 @@ def api_upgrade(body: UpgradeIn):
         **row_to_player_dict(row2),
         payout_oil=cfg2["payout_oil"],
     )
+    
+
+@app.post("/api/convert", response_model=StateOut)
+def api_convert(body: ConvertIn):
+    """
+    Quy đổi Dầu <-> Xu với phí 1%.
+    - direction = "oil_to_xu": trừ Dầu, cộng Xu
+    - direction = "xu_to_oil": trừ Xu, cộng Dầu
+    """
+    if body.direction not in ("oil_to_xu", "xu_to_oil"):
+        raise HTTPException(status_code=400, detail="direction không hợp lệ")
+
+    row = get_or_create_player(body.tg_id, body.username)
+    oil = float(row["oil"])
+    xu = float(row["xu"])
+    level = row["rig_level"]
+
+    amount = float(body.amount)
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Số lượng phải > 0")
+
+    if body.direction == "oil_to_xu":
+        # Đổi Dầu sang Xu
+        if oil < amount:
+            raise HTTPException(
+                status_code=400,
+                detail="Không đủ Dầu để quy đổi."
+            )
+
+        base_xu = amount / OIL_PER_XU
+        fee_xu = base_xu * FEE_RATE
+        gain_xu = base_xu - fee_xu
+
+        new_oil = oil - amount
+        new_xu = xu + gain_xu
+
+    else:
+        # "xu_to_oil": Đổi Xu sang Dầu
+        if xu < amount:
+            raise HTTPException(
+                status_code=400,
+                detail="Không đủ Xu để quy đổi."
+            )
+
+        base_oil = amount * OIL_PER_XU
+        fee_oil = base_oil * FEE_RATE
+        gain_oil = base_oil - fee_oil
+
+        new_xu = xu - amount
+        new_oil = oil + gain_oil
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        UPDATE players
+        SET oil = ?, xu = ?
+        WHERE tg_id = ?
+        """,
+        (new_oil, new_xu, body.tg_id),
+    )
+    conn.commit()
+    cur.execute("SELECT * FROM players WHERE tg_id = ?", (body.tg_id,))
+    row2 = cur.fetchone()
+    conn.close()
+
+    level2 = row2["rig_level"]
+    cfg2 = LEVEL_CONFIG.get(level2, LEVEL_CONFIG[1])
+    return StateOut(
+        **row_to_player_dict(row2),
+        payout_oil=cfg2["payout_oil"],
+    )    
 
 
 # ============ API RÚT TIỀN ============
