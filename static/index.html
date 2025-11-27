@@ -2,174 +2,324 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Đế Chế Dầu Đen – Ví & Rút tiền</title>
+    <title>Đế Chế Dầu Đen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       :root {
-        --bg: #050816;
-        --card: #101827;
+        --bg: #020617;
+        --bg-soft: #020617;
+        --card: #020617;
+        --card-soft: #020617;
+        --border: #1e293b;
         --accent: #f97316;
-        --accent-soft: rgba(249, 115, 22, 0.1);
+        --accent-soft: rgba(249, 115, 22, 0.12);
+        --accent-strong: #f97316;
         --text: #e5e7eb;
         --muted: #9ca3af;
         --danger: #f87171;
         --success: #4ade80;
-        --border: #1f2937;
       }
 
       * {
         box-sizing: border-box;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display",
-          "Segoe UI", sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
       }
 
       body {
         margin: 0;
-        padding: 0;
         min-height: 100vh;
-        background: radial-gradient(circle at top, #111827, #020617);
+        background: radial-gradient(circle at top, #020617, #020617);
         color: var(--text);
         display: flex;
-        align-items: center;
         justify-content: center;
+        padding: 8px;
       }
 
       .app {
         width: 100%;
         max-width: 480px;
-        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
 
       .card {
-        background: rgba(15, 23, 42, 0.95);
+        background: rgba(15, 23, 42, 0.96);
         border-radius: 18px;
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
-        padding: 16px 18px 20px;
-        backdrop-filter: blur(18px);
+        border: 1px solid rgba(30, 64, 175, 0.5);
+        padding: 12px 14px 12px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
       }
 
-      .card-header {
+      .header {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        margin-bottom: 12px;
+        align-items: center;
+        margin-bottom: 6px;
       }
 
-      .title {
+      .header-left {
         display: flex;
         align-items: center;
         gap: 8px;
       }
 
-      .title-icon {
-        width: 22px;
-        height: 22px;
+      .logo-circle {
+        width: 26px;
+        height: 26px;
         border-radius: 999px;
-        background: radial-gradient(circle at 30% 20%, #fed7aa, #f97316);
+        background: radial-gradient(circle at 25% 20%, #fed7aa, #f97316);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
-        box-shadow: 0 0 18px rgba(248, 250, 252, 0.35);
+        box-shadow: 0 0 22px rgba(248, 250, 252, 0.35);
+        font-size: 14px;
       }
 
-      .title-text {
-        font-weight: 650;
-        letter-spacing: 0.03em;
+      .title-block {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .title-main {
         font-size: 15px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
       }
 
-      .user-small {
-        text-align: right;
+      .title-sub {
         font-size: 11px;
         color: var(--muted);
       }
 
-      .pill {
+      .online-pill {
         display: inline-flex;
         align-items: center;
+        gap: 5px;
         padding: 4px 8px;
         border-radius: 999px;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(148, 163, 184, 0.24);
-        gap: 5px;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: rgba(15, 23, 42, 0.9);
+        font-size: 11px;
       }
 
-      .pill-dot {
+      .online-dot {
         width: 8px;
         height: 8px;
         border-radius: 999px;
         background: #22c55e;
-        box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+        box-shadow: 0 0 14px rgba(34, 197, 94, 0.9);
+      }
+
+      .nav-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .nav-tab {
+        flex: 1;
+        font-size: 12px;
+        padding: 6px 4px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 41, 55, 0.95);
+        background: rgba(15, 23, 42, 0.9);
+        color: var(--muted);
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .nav-tab.active {
+        color: #020617;
+        background: linear-gradient(135deg, #f97316, #fb923c);
+        border-color: rgba(248, 250, 252, 0.4);
+        box-shadow: 0 10px 28px rgba(249, 115, 22, 0.5);
+        font-weight: 600;
       }
 
       .section-title {
         font-size: 12px;
         text-transform: uppercase;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.18em;
         color: var(--muted);
         margin-bottom: 6px;
       }
 
-      .wallet-row {
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .stat-card {
+        border-radius: 12px;
+        border: 1px solid rgba(30, 64, 175, 0.6);
+        background: radial-gradient(circle at top left, #0f172a, #020617);
+        padding: 8px 9px;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .stat-value {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .stat-sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .rig-card {
+        border-radius: 14px;
+        border: 1px solid rgba(30, 64, 175, 0.7);
+        background: radial-gradient(circle at top, #020617, #020617);
+        padding: 10px 10px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .rig-top {
         display: flex;
         justify-content: space-between;
-        background: rgba(15, 23, 42, 0.85);
-        border-radius: 12px;
-        padding: 8px 10px;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        margin-bottom: 4px;
-        font-size: 13px;
-      }
-
-      .wallet-row span:first-child {
+        font-size: 12px;
         color: var(--muted);
       }
 
-      .wallet-row span:last-child {
-        font-weight: 600;
-      }
-
-      .divider {
-        border: none;
-        border-top: 1px dashed rgba(55, 65, 81, 0.85);
-        margin: 12px 0;
-      }
-
-      .subtext {
-        font-size: 11px;
-        color: var(--muted);
-        line-height: 1.4;
-      }
-
-      .hint {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 4px;
-      }
-
-      .bounty {
+      .rig-top span strong {
         color: var(--accent);
-        font-weight: 600;
       }
 
-      .field {
-        margin-top: 8px;
+      .rig-image-box {
+        width: 100%;
+        background: radial-gradient(circle at top, #020617, #020617);
+        border-radius: 12px;
+        border: 1px solid rgba(30, 64, 175, 0.8);
+        padding: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .rig-image-box img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .cooldown-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+      }
+
+      .cooldown-label {
+        color: var(--muted);
+      }
+
+      .cooldown-time {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .cooldown-bar {
+        margin-top: 4px;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.9);
+        overflow: hidden;
+        border: 1px solid rgba(30, 64, 175, 0.8);
+      }
+
+      .cooldown-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #22c55e, #f97316);
+        transition: width 0.2s linear;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 6px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #f97316, #fb923c);
+        color: #020617;
+        box-shadow: 0 12px 30px rgba(249, 115, 22, 0.55);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: default;
+        box-shadow: none;
+      }
+
+      .btn-secondary {
+        background: rgba(15, 23, 42, 0.9);
+        color: var(--text);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+      }
+
+      .btn-secondary:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .small-text {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .mb-4 {
         margin-bottom: 8px;
       }
 
+      .field {
+        margin-bottom: 6px;
+      }
+
       .field-label {
-        font-size: 12px;
-        margin-bottom: 4px;
+        font-size: 11px;
         color: var(--muted);
+        margin-bottom: 3px;
       }
 
       .input {
         width: 100%;
-        padding: 8px 10px;
+        padding: 6px 8px;
         border-radius: 10px;
-        border: 1px solid rgba(55, 65, 81, 0.9);
+        border: 1px solid rgba(51, 65, 85, 0.95);
         background: rgba(15, 23, 42, 0.96);
         color: var(--text);
         font-size: 13px;
@@ -178,41 +328,12 @@
 
       .input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.6);
-      }
-
-      .btn {
-        width: 100%;
-        border-radius: 999px;
-        padding: 9px 10px;
-        border: none;
-        outline: none;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 6px;
-        background: linear-gradient(135deg, #f97316, #fb923c);
-        color: #0b1120;
-        box-shadow: 0 14px 32px rgba(249, 115, 22, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-      }
-
-      .btn:disabled {
-        opacity: 0.6;
-        cursor: default;
-        box-shadow: none;
-      }
-
-      .btn span {
-        font-size: 13px;
+        box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.5);
       }
 
       .status {
-        margin-top: 8px;
-        font-size: 12px;
+        font-size: 11px;
+        margin-top: 4px;
       }
 
       .status.error {
@@ -223,27 +344,19 @@
         color: var(--success);
       }
 
-      .history-title {
-        margin-top: 10px;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: var(--muted);
-      }
-
       .history-list {
-        margin-top: 4px;
+        margin-top: 6px;
         max-height: 180px;
         overflow-y: auto;
-        padding-right: 4px;
+        padding-right: 2px;
       }
 
       .history-item {
-        padding: 7px 8px;
         border-radius: 10px;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        background: rgba(15, 23, 42, 0.9);
-        font-size: 12px;
+        border: 1px solid rgba(30, 64, 175, 0.7);
+        background: rgba(15, 23, 42, 0.96);
+        padding: 6px 7px;
+        font-size: 11px;
         display: flex;
         flex-direction: column;
         gap: 2px;
@@ -256,10 +369,10 @@
       }
 
       .tag {
-        font-size: 10px;
-        padding: 2px 6px;
+        padding: 1px 6px;
         border-radius: 999px;
         border: 1px solid rgba(148, 163, 184, 0.5);
+        font-size: 9px;
         text-transform: uppercase;
         letter-spacing: 0.12em;
       }
@@ -281,130 +394,229 @@
 
       .history-meta {
         color: var(--muted);
-        font-size: 11px;
       }
 
-      .bottom-nav {
-        margin-top: 16px;
-        display: flex;
-        justify-content: center;
-        gap: 8px;
+      .muted-box {
+        border-radius: 12px;
+        border: 1px dashed rgba(55, 65, 81, 0.9);
+        background: rgba(15, 23, 42, 0.9);
+        padding: 8px 9px;
         font-size: 11px;
         color: var(--muted);
-        opacity: 0.7;
-      }
-
-      .bottom-nav span.active {
-        color: var(--accent);
-        font-weight: 600;
       }
     </style>
   </head>
   <body>
     <div class="app">
       <div class="card">
-        <div class="card-header">
-          <div class="title">
-            <div class="title-icon">⛽</div>
-            <div>
-              <div class="title-text">Đế Chế Dầu Đen</div>
-              <div class="subtext" id="user-label">Đang tải thông tin người chơi...</div>
+        <!-- HEADER -->
+        <div class="header">
+          <div class="header-left">
+            <div class="logo-circle">⛽</div>
+            <div class="title-block">
+              <div class="title-main">Đế Chế Dầu Đen</div>
+              <div id="user-label" class="title-sub">
+                Đang lấy thông tin Telegram...
+              </div>
             </div>
           </div>
-          <div class="user-small">
-            <div class="pill">
-              <span class="pill-dot"></span>
-              <span id="pill-status">Online</span>
+          <div class="online-pill">
+            <span class="online-dot"></span>
+            <span>Online</span>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="nav-tabs">
+          <div class="nav-tab active" data-screen="home">Trang</div>
+          <div class="nav-tab" data-screen="tasks">Nhiệm vụ</div>
+          <div class="nav-tab" data-screen="oil">Dầu</div>
+          <div class="nav-tab" data-screen="friends">Bạn bè</div>
+          <div class="nav-tab" data-screen="wallet">Ví</div>
+        </div>
+
+        <!-- SCREENS -->
+        <!-- HOME -->
+        <div class="screen active" id="screen-home">
+          <div class="section-title">Tổng quan</div>
+          <div class="grid-2 mb-4">
+            <div class="stat-card">
+              <div class="stat-label">Dầu thô</div>
+              <div class="stat-value" id="home-oil">0</div>
+              <div class="stat-sub">Nguyên liệu chính để nâng cấp.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Xu</div>
+              <div class="stat-value" id="home-xu">0</div>
+              <div class="stat-sub">10 Xu = 1.000 VND (rút về ZaloPay).</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Giàn khoan</div>
+            <div class="stat-value">
+              Cấp <span id="home-rig-level">1</span>
+            </div>
+            <div class="stat-sub">
+              Mỗi lần đào: <span id="home-rig-yield">0</span> Dầu · Cooldown
+              5 phút.
             </div>
           </div>
         </div>
 
-        <!-- Ví hiện có -->
-        <div class="section-title">Ví & giá trị xu</div>
-        <div class="wallet-row">
-          <span>Đầu hiện có</span>
-          <span id="wallet-balance">0,0</span>
-        </div>
-        <div class="wallet-row">
-          <span>Giá trị Xu</span>
-          <span id="wallet-value">0 VND</span>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Rút tiền -->
-        <div class="section-title">Rút tiền</div>
-        <div class="subtext">
-          * Quy ước: 10 Xu = 1.000đ. Đề xuất min rút: 200 Xu = 20.000đ.  
-          * Số Xu sẽ do bot Telegram của bạn quyết định & trừ ở backend thật.
-        </div>
-
-        <div class="field">
-          <div class="field-label">Số Xu muốn rút</div>
-          <input
-            type="number"
-            id="withdraw-amount"
-            class="input"
-            placeholder="Ví dụ: 200"
-            min="200"
-            step="10"
-          />
-          <div class="hint">Tối thiểu 200 Xu. Số Xu này sẽ gửi lên backend.</div>
-        </div>
-
-        <div class="field">
-          <div class="field-label">Số điện thoại (Momo / ngân hàng)</div>
-          <input
-            type="tel"
-            id="withdraw-phone"
-            class="input"
-            placeholder="84xxxxxxxxx"
-          />
-          <div class="hint">Bắt buộc dạng 84xxxxxxxxx (không có số 0 ở đầu).</div>
-        </div>
-
-        <button id="withdraw-btn" class="btn">
-          <span>Gửi yêu cầu rút (backend thật)</span>
-        </button>
-
-        <div id="withdraw-status" class="status"></div>
-
-        <div class="history-title">Lịch sử yêu cầu rút gần đây</div>
-        <div id="withdraw-history" class="history-list">
-          <div class="subtext">
-            Chưa có yêu cầu nào. Khi bạn rút, lịch sử sẽ hiện ở đây.
+        <!-- TASKS -->
+        <div class="screen" id="screen-tasks">
+          <div class="section-title">Nhiệm vụ bonus</div>
+          <div class="muted-box">
+            Hiện tại phần nhiệm vụ bonus (Onus, ATX...) vẫn xử lý thủ công qua
+            bot Telegram.  
+            <br />Bạn có thể giữ bố cục cũ hoặc sau này mình sẽ nối thêm API
+            riêng cho bạn.
           </div>
         </div>
-      </div>
 
-      <div class="bottom-nav">
-        <span>🏠 Trang</span>
-        <span>Nhiệm vụ</span>
-        <span>Dầu</span>
-        <span>Bạn bè</span>
-        <span class="active">Ví</span>
+        <!-- OIL (ĐÀO & NÂNG CẤP) -->
+        <div class="screen" id="screen-oil">
+          <div class="section-title">Giàn khoan dầu</div>
+
+          <div class="rig-card">
+            <div class="rig-top">
+              <span>Lv. <strong id="oil-rig-level">1</strong></span>
+              <span>
+                Mỗi lần: <strong id="oil-rig-yield">0</strong> Dầu
+              </span>
+            </div>
+
+            <div class="rig-image-box">
+              <img
+                id="rig-image"
+                src="image/rig_level1.png"
+                alt="Giàn khoan"
+              />
+            </div>
+
+            <div class="cooldown-row">
+              <span class="cooldown-label">Trạng thái</span>
+              <span class="cooldown-time" id="cooldown-label">
+                Sẵn sàng đào
+              </span>
+            </div>
+            <div class="cooldown-bar">
+              <div class="cooldown-bar-fill" id="cooldown-bar"></div>
+            </div>
+
+            <button class="btn-primary" id="btn-mine">
+              ⛏ Khai thác dầu
+            </button>
+
+            <button class="btn-secondary" id="btn-upgrade">
+              🔧 Nâng cấp giàn khoan
+            </button>
+
+            <div class="small-text">
+              Dầu hiện có: <span id="oil-balance">0</span> · Xu: 
+              <span id="oil-xu">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FRIENDS -->
+        <div class="screen" id="screen-friends">
+          <div class="section-title">Mời bạn bè</div>
+          <div class="muted-box">
+            Chức năng mời bạn bè, đếm ngày hoạt động và chia 5% sản lượng đào
+            sẽ được nối API riêng (phase sau).  
+            <br />Hiện tại bạn có thể giữ logic cũ trên bot để quản lý ref.
+          </div>
+        </div>
+
+        <!-- WALLET -->
+        <div class="screen" id="screen-wallet">
+          <div class="section-title">Ví & rút tiền</div>
+
+          <div class="grid-2 mb-4">
+            <div class="stat-card">
+              <div class="stat-label">Dầu</div>
+              <div class="stat-value" id="wallet-oil">0</div>
+              <div class="stat-sub">Có thể chuyển đổi sang Xu sau này.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Xu</div>
+              <div class="stat-value" id="wallet-xu">0</div>
+              <div class="stat-sub">
+                10 Xu = 1.000 VND. Min rút đề xuất: 200 Xu.
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Số Xu muốn rút</div>
+            <input
+              id="withdraw-amount"
+              type="number"
+              class="input"
+              placeholder="Ví dụ: 200"
+              min="200"
+              step="10"
+            />
+          </div>
+          <div class="field">
+            <div class="field-label">Số điện thoại ZaloPay (84...)</div>
+            <input
+              id="withdraw-phone"
+              type="tel"
+              class="input"
+              placeholder="84xxxxxxxxx"
+            />
+          </div>
+
+          <button class="btn-primary" id="withdraw-btn">
+            💸 Gửi yêu cầu rút
+          </button>
+          <div id="withdraw-status" class="status"></div>
+
+          <div class="section-title" style="margin-top: 10px">
+            Lịch sử rút gần đây
+          </div>
+          <div id="withdraw-history" class="history-list">
+            <div class="small-text">
+              Chưa có yêu cầu rút nào. Khi bạn rút, lịch sử sẽ hiện ở đây.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <script>
-      // ===================== Telegram user info =====================
-      const tg = window.Telegram ? window.Telegram.WebApp : null;
-      let TG_ID = "0";
-      let TG_USERNAME = "";
-
-      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        TG_ID = String(user.id);
-        TG_USERNAME = user.username || "";
-        document.getElementById(
-          "user-label"
-        ).textContent = `@${TG_USERNAME || "user"} · ID: ${TG_ID}`;
-      } else {
-        document.getElementById("user-label").textContent =
-          "Không lấy được info Telegram – đang chạy ở trình duyệt thường";
+      // ================== PARSE QUERY ==================
+      function parseQuery() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          tg_id: params.get("tg_id") || "",
+          username: params.get("username") || "",
+          sig: params.get("sig") || ""
+        };
       }
 
-      // ===================== Helper =====================
+      const q = parseQuery();
+
+      // ================== UI HELPERS ==================
+
+      function setUserLabel() {
+        const el = document.getElementById("user-label");
+        if (!q.tg_id) {
+          el.textContent =
+            "Không tìm thấy Telegram ID. Vui lòng mở từ nút trong bot.";
+          return;
+        }
+        el.textContent = `@${q.username || "user"} · ID: ${q.tg_id}`;
+      }
+
+      function formatNumber(n) {
+        return n.toLocaleString("vi-VN", {
+          maximumFractionDigits: 2
+        });
+      }
 
       function formatTime(ts) {
         const d = new Date(ts * 1000);
@@ -414,138 +626,418 @@
         )} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       }
 
-      function setStatus(msg, type) {
-        const el = document.getElementById("withdraw-status");
-        el.textContent = msg;
-        el.className = "status " + (type || "");
+      // ================== STATE ==================
+      const MINE_COOLDOWN_MS = 5 * 60 * 1000; // 5 phút
+      const STORAGE_KEY = "oil_miner_backend_v1";
+
+      const state = {
+        rigLevel: 1,
+        oil: 0,
+        xu: 0,
+        lastMineAt: 0,
+        payoutOil: 0
+      };
+
+      // Mapping level -> ảnh
+      const rigImages = {
+        1: "image/rig_level1.png",
+        2: "image/rig_level2.png",
+        3: "image/rig_level3.png",
+        4: "image/rig_level4.png",
+        5: "image/rig_level5.png",
+        6: "image/rig_level6.png",
+        7: "image/rig_level7.png",
+        8: "image/rig_level8.png",
+        9: "image/rig_level8.png", // tạm dùng chung
+        10: "image/rig_level8.png" // tạm dùng chung
+      };
+
+      function loadPersistedCooldown() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (typeof data.lastMineAt === "number") {
+            state.lastMineAt = data.lastMineAt;
+          }
+        } catch (e) {
+          console.warn("Cannot load cooldown", e);
+        }
       }
 
-      // ===================== Call backend =====================
+      function savePersistedCooldown() {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ lastMineAt: state.lastMineAt || 0 })
+          );
+        } catch (e) {
+          console.warn("Cannot save cooldown", e);
+        }
+      }
 
-      async function sendWithdrawRequest() {
+      // ================== API ==================
+
+      async function apiGetState() {
+        if (!q.tg_id) return;
+        const url =
+          "/api/state?tg_id=" +
+          encodeURIComponent(q.tg_id) +
+          "&username=" +
+          encodeURIComponent(q.username || "");
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.error("Lỗi /api/state", await res.text());
+          return;
+        }
+        const data = await res.json();
+        state.rigLevel = data.rig_level;
+        state.oil = data.oil;
+        state.xu = data.xu;
+        state.lastMineAt = data.last_mine_at_ms || 0;
+        state.payoutOil = data.payout_oil || 0;
+
+        // đồng bộ cooldown local nếu trống
+        if (!state.lastMineAt) {
+          const localRaw = localStorage.getItem(STORAGE_KEY);
+          if (localRaw) {
+            try {
+              const obj = JSON.parse(localRaw);
+              if (typeof obj.lastMineAt === "number") {
+                state.lastMineAt = obj.lastMineAt;
+              }
+            } catch {}
+          }
+        } else {
+          savePersistedCooldown();
+        }
+      }
+
+      async function apiMine() {
+        if (!q.tg_id) {
+          alert("Không tìm thấy Telegram ID, hãy mở từ bot.");
+          return null;
+        }
+        const res = await fetch("/api/mine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tg_id: q.tg_id,
+            username: q.username
+          })
+        });
+        if (!res.ok) {
+          const txt = await res.text();
+          alert("Không thể khai thác: " + txt);
+          return null;
+        }
+        const data = await res.json();
+        state.rigLevel = data.rig_level;
+        state.oil = data.oil;
+        state.xu = data.xu;
+        state.lastMineAt = data.last_mine_at_ms || Date.now();
+        state.payoutOil = data.payout_oil || 0;
+        savePersistedCooldown();
+        return data;
+      }
+
+      async function apiUpgrade() {
+        if (!q.tg_id) {
+          alert("Không tìm thấy Telegram ID, hãy mở từ bot.");
+          return null;
+        }
+        const res = await fetch("/api/upgrade", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tg_id: q.tg_id,
+            username: q.username
+          })
+        });
+        if (!res.ok) {
+          const txt = await res.text();
+          alert("Không thể nâng cấp: " + txt);
+          return null;
+        }
+        const data = await res.json();
+        state.rigLevel = data.rig_level;
+        state.oil = data.oil;
+        state.xu = data.xu;
+        state.lastMineAt = data.last_mine_at_ms || state.lastMineAt;
+        state.payoutOil = data.payout_oil || 0;
+        return data;
+      }
+
+      async function apiWithdraw(amount, phone) {
+        if (!q.tg_id) {
+          alert("Không tìm thấy Telegram ID, hãy mở từ bot.");
+          return null;
+        }
+        const res = await fetch("/api/withdraw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tg_id: q.tg_id,
+            username: q.username,
+            amount_xu: amount,
+            phone: phone
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          const detail = data && data.detail ? data.detail : "Lỗi không xác định";
+          throw new Error(detail);
+        }
+        return data;
+      }
+
+      async function apiWithdrawHistory() {
+        if (!q.tg_id) return [];
+        const res = await fetch(
+          "/api/withdraw-history?tg_id=" + encodeURIComponent(q.tg_id)
+        );
+        if (!res.ok) {
+          console.error("Lỗi /api/withdraw-history", await res.text());
+          return [];
+        }
+        return await res.json();
+      }
+
+      // ================== COOLDOWN ==================
+
+      function getCooldownRemaining() {
+        if (!state.lastMineAt) return 0;
+        const now = Date.now();
+        const end = state.lastMineAt + MINE_COOLDOWN_MS;
+        return Math.max(0, end - now);
+      }
+
+      let cooldownTimer = null;
+
+      function updateCooldownUI() {
+        const remain = getCooldownRemaining();
+        const label = document.getElementById("cooldown-label");
+        const bar = document.getElementById("cooldown-bar");
+        const btnMine = document.getElementById("btn-mine");
+
+        if (remain <= 0) {
+          label.textContent = "Sẵn sàng đào";
+          bar.style.width = "0%";
+          btnMine.disabled = false;
+          return;
+        }
+
+        const remainSec = Math.ceil(remain / 1000);
+        const min = Math.floor(remainSec / 60);
+        const sec = remainSec % 60;
+        label.textContent = `Cooldown: ${min}m ${sec}s`;
+
+        const ratio = 1 - remain / MINE_COOLDOWN_MS;
+        bar.style.width = Math.min(100, Math.max(0, ratio * 100)) + "%";
+        btnMine.disabled = true;
+      }
+
+      function startCooldownTimer() {
+        if (cooldownTimer) window.clearInterval(cooldownTimer);
+        cooldownTimer = window.setInterval(updateCooldownUI, 1000);
+        updateCooldownUI();
+      }
+
+      // ================== UI UPDATE ==================
+
+      function updateHomeUI() {
+        document.getElementById("home-oil").textContent = formatNumber(state.oil);
+        document.getElementById("home-xu").textContent = formatNumber(state.xu);
+        document.getElementById("home-rig-level").textContent =
+          state.rigLevel || 1;
+        document.getElementById("home-rig-yield").textContent =
+          formatNumber(state.payoutOil || 0);
+      }
+
+      function updateOilUI() {
+        document.getElementById("oil-rig-level").textContent =
+          state.rigLevel || 1;
+        document.getElementById("oil-rig-yield").textContent =
+          formatNumber(state.payoutOil || 0);
+        document.getElementById("oil-balance").textContent =
+          formatNumber(state.oil);
+        document.getElementById("oil-xu").textContent = formatNumber(state.xu);
+
+        const img = document.getElementById("rig-image");
+        const lvl = state.rigLevel || 1;
+        const src = rigImages[lvl] || rigImages[1];
+        img.src = src;
+      }
+
+      function updateWalletUI() {
+        document.getElementById("wallet-oil").textContent =
+          formatNumber(state.oil);
+        document.getElementById("wallet-xu").textContent =
+          formatNumber(state.xu);
+      }
+
+      function updateUIAll() {
+        updateHomeUI();
+        updateOilUI();
+        updateWalletUI();
+        updateCooldownUI();
+      }
+
+      // ================== HANDLERS ==================
+
+      async function handleMine() {
+        const remain = getCooldownRemaining();
+        if (remain > 0) {
+          updateCooldownUI();
+          return;
+        }
+        const data = await apiMine();
+        if (!data) return;
+        updateUIAll();
+        startCooldownTimer();
+        const gained = data.payout_oil || state.payoutOil || 0;
+        alert("Đã khai thác +" + formatNumber(gained) + " Dầu!");
+      }
+
+      async function handleUpgrade() {
+        if (state.rigLevel >= 10) {
+          alert("Giàn khoan đã đạt Lv.10 tối đa.");
+          return;
+        }
+        if (!confirm("Bạn chắc chắn muốn nâng cấp giàn khoan?")) return;
+        const data = await apiUpgrade();
+        if (!data) return;
+        updateUIAll();
+        alert("Đã nâng cấp lên Lv." + data.rig_level + "!");
+      }
+
+      async function handleWithdraw() {
         const amountEl = document.getElementById("withdraw-amount");
         const phoneEl = document.getElementById("withdraw-phone");
+        const statusEl = document.getElementById("withdraw-status");
         const btn = document.getElementById("withdraw-btn");
 
-        const amount = parseInt(amountEl.value || "0", 10);
-        const phone = phoneEl.value.trim();
+        const amount = parseFloat(amountEl.value || "0");
+        const phone = (phoneEl.value || "").trim();
 
-        if (!TG_ID || TG_ID === "0") {
-          setStatus(
-            "Không lấy được Telegram ID. Hãy mở WebApp từ trong Telegram.",
-            "error"
-          );
+        statusEl.textContent = "";
+        statusEl.className = "status";
+
+        if (!amount || amount < 200) {
+          statusEl.textContent = "Min rút là 200 Xu.";
+          statusEl.classList.add("error");
           return;
         }
-
-        if (isNaN(amount) || amount < 200) {
-          setStatus("Min rút là 200 Xu.", "error");
-          return;
-        }
-
         if (!phone.startsWith("84") || phone.length < 9) {
-          setStatus("Số điện thoại phải dạng 84xxxxxxxxx.", "error");
+          statusEl.textContent = "Số điện thoại phải dạng 84xxxxxxxxx.";
+          statusEl.classList.add("error");
           return;
         }
 
         btn.disabled = true;
-        setStatus("Đang gửi yêu cầu rút...", "");
-
+        statusEl.textContent = "Đang gửi yêu cầu rút...";
         try {
-          const res = await fetch("/api/withdraw", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              tg_id: TG_ID,
-              username: TG_USERNAME,
-              amount_xu: amount,
-              phone: phone,
-            }),
-          });
-
-          const data = await res.json();
-
-          if (!res.ok) {
-            setStatus(data.detail || "Có lỗi xảy ra khi gửi yêu cầu.", "error");
-          } else {
-            setStatus(
-              `Đã tạo yêu cầu #${data.id} · ${data.amount_xu} Xu · ${data.phone}`,
-              "success"
-            );
-            amountEl.value = "";
-            // reload history
-            loadHistory();
-          }
-        } catch (e) {
-          console.error(e);
-          setStatus("Không kết nối được server. Thử lại sau.", "error");
+          const data = await apiWithdraw(amount, phone);
+          statusEl.textContent =
+            "Đã tạo yêu cầu #" +
+            data.id +
+            " · " +
+            data.amount_xu +
+            " Xu · " +
+            data.phone;
+          statusEl.classList.add("success");
+          amountEl.value = "";
+          await loadWithdrawHistory();
+        } catch (err) {
+          statusEl.textContent = "Lỗi: " + err.message;
+          statusEl.classList.add("error");
         } finally {
           btn.disabled = false;
         }
       }
 
-      async function loadHistory() {
-        if (!TG_ID || TG_ID === "0") return;
-
+      async function loadWithdrawHistory() {
         const box = document.getElementById("withdraw-history");
         box.innerHTML =
-          '<div class="subtext">Đang tải lịch sử rút...</div>';
-
-        try {
-          const res = await fetch(
-            `/api/withdraw-history?tg_id=${encodeURIComponent(TG_ID)}`
-          );
-          const data = await res.json();
-
-          if (!Array.isArray(data) || data.length === 0) {
-            box.innerHTML =
-              '<div class="subtext">Chưa có yêu cầu rút nào.</div>';
-            return;
-          }
-
-          box.innerHTML = "";
-          for (const item of data) {
-            const div = document.createElement("div");
-            div.className = "history-item";
-
-            const status = item.status || "pending";
-            let tagClass = "pending";
-            let tagText = "Pending";
-            if (status === "done" || status === "paid") {
-              tagClass = "done";
-              tagText = "Hoàn tất";
-            } else if (status === "reject" || status === "rejected") {
-              tagClass = "reject";
-              tagText = "Từ chối";
-            }
-
-            div.innerHTML = `
-              <div class="history-top">
-                <div><b>#${item.id}</b> · ${item.amount_xu} Xu</div>
-                <div class="tag ${tagClass}">${tagText}</div>
-              </div>
-              <div class="history-meta">SĐT: ${item.phone}</div>
-              <div class="history-meta">Lúc: ${formatTime(item.created_at)}</div>
-            `;
-            box.appendChild(div);
-          }
-        } catch (e) {
-          console.error(e);
+          '<div class="small-text">Đang tải lịch sử rút...</div>';
+        const list = await apiWithdrawHistory();
+        if (!Array.isArray(list) || list.length === 0) {
           box.innerHTML =
-            '<div class="subtext">Lỗi tải lịch sử. Thử lại sau.</div>';
+            '<div class="small-text">Chưa có yêu cầu rút nào.</div>';
+          return;
         }
+
+        box.innerHTML = "";
+        list.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "history-item";
+
+          let tagClass = "pending";
+          let tagText = "Pending";
+          if (item.status === "done" || item.status === "paid") {
+            tagClass = "done";
+            tagText = "Hoàn tất";
+          } else if (item.status === "reject" || item.status === "rejected") {
+            tagClass = "reject";
+            tagText = "Từ chối";
+          }
+
+          div.innerHTML = `
+            <div class="history-top">
+              <div><b>#${item.id}</b> · ${item.amount_xu} Xu</div>
+              <div class="tag ${tagClass}">${tagText}</div>
+            </div>
+            <div class="history-meta">SĐT: ${item.phone}</div>
+            <div class="history-meta">Lúc: ${formatTime(
+              item.created_at || 0
+            )}</div>
+          `;
+          box.appendChild(div);
+        });
       }
 
-      // ===================== Init =====================
+      function setupTabs() {
+        const tabs = document.querySelectorAll(".nav-tab");
+        const screens = document.querySelectorAll(".screen");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const target = tab.getAttribute("data-screen");
+            tabs.forEach((t) => t.classList.remove("active"));
+            screens.forEach((s) => s.classList.remove("active"));
+            tab.classList.add("active");
+            document
+              .getElementById("screen-" + target)
+              .classList.add("active");
+          });
+        });
+      }
 
-      document
-        .getElementById("withdraw-btn")
-        .addEventListener("click", sendWithdrawRequest);
+      // ================== INIT ==================
+      document.addEventListener("DOMContentLoaded", async () => {
+        setUserLabel();
+        setupTabs();
 
-      // load history khi vào trang
-      loadHistory();
+        loadPersistedCooldown(); // lấy cooldown local
+
+        // Lấy state thật từ backend
+        await apiGetState();
+        updateUIAll();
+        startCooldownTimer();
+
+        // Gắn handler
+        document
+          .getElementById("btn-mine")
+          .addEventListener("click", handleMine);
+        document
+          .getElementById("btn-upgrade")
+          .addEventListener("click", handleUpgrade);
+        document
+          .getElementById("withdraw-btn")
+          .addEventListener("click", handleWithdraw);
+
+        // Load lịch sử rút lần đầu
+        await loadWithdrawHistory();
+      });
     </script>
   </body>
 </html>
