@@ -73,7 +73,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         [
             InlineKeyboardButton(
                 text="⛏ Mở game đào dầu",
-                web_app=WebAppInfo(url=full_url),
+                web_app=WebAppInfo(url=https://chdum.fly.dev),
             )
         ]
     ]
