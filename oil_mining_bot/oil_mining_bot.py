@@ -7,6 +7,15 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+
+# ========= WEBAPP BACKEND (Fly.io) =========
+WEBAPP_URL = "https://chdum.fly.dev"  # URL webapp bạn vừa deploy
+
+WITHDRAW_URL = f"{WEBAPP_URL}/api/withdraw"
+WITHDRAW_HISTORY_URL = f"{WEBAPP_URL}/api/withdraw-history"
+PLAYER_STATE_URL = f"{WEBAPP_URL}/api/player/state"
+# ==========================================
 
 # Config from environment
 TOKEN = os.getenv("BOT_TOKEN", "REPLACE_WITH_YOUR_TOKEN")
@@ -104,6 +113,20 @@ def main_inline_kb():
     kb.button(text="👥 Giới thiệu bạn bè", callback_data="referral")
     kb.button(text="💱 Quy đổi", callback_data="convert")
     return kb.as_markup()
+def webapp_keyboard():
+    # Nút dưới ô chat: Mở WebApp game
+    kb = ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="🚀 Mở game Đế Chế Dầu Đen",
+                    web_app=WebAppInfo(url=WEBAPP_URL),
+                )
+            ]
+        ],
+        resize_keyboard=True,
+    )
+    return kb    
 
 # ---------------------- START ----------------------
 @dp.message(Command("start"))
@@ -112,7 +135,16 @@ async def cmd_start(message: types.Message):
     ref = None
     if len(args) > 1 and args[1].isdigit():
         ref = int(args[1])
+
     create_user(message.from_user.id, message.from_user.username or "", ref)
+
+    # 1) Bàn phím dưới ô chat: nút mở WebApp
+    await message.answer(
+        "🚀 Bấm nút dưới đây để mở game đào dầu:",
+        reply_markup=webapp_keyboard()
+    )
+
+    # 2) Inline menu trong chính WebApp/Bot (các chức năng game trong chat)
     await message.answer(
         "🛢️ Bạn là nhà đầu tư vừa mở mỏ dầu mới!\nNâng cấp dàn khoan, khai thác dầu đen, đổi xu để rút tiền.",
         reply_markup=main_inline_kb()
@@ -179,13 +211,22 @@ async def checkin(cq: types.CallbackQuery):
     tg_id = cq.from_user.id
     con = sqlite3.connect(DB)
     cur = con.cursor()
-    cur.execute("SELECT id, last_day, streak FROM daily_checkin WHERE user_id=(SELECT id FROM users WHERE tg_id=?)", (tg_id,))
+    cur.execute(
+        "SELECT id, last_day, streak FROM daily_checkin WHERE user_id=(SELECT id FROM users WHERE tg_id=?)",
+        (tg_id,),
+    )
     row = cur.fetchone()
     today = int(time.time()) // 86400
 
     if not row:
-        cur.execute("INSERT INTO daily_checkin (user_id,last_day,streak) VALUES((SELECT id FROM users WHERE tg_id=?),?,?,?)",
-                    (tg_id, today, 1))
+        # user_id, last_day, streak  -> 3 cột, 3 giá trị
+        cur.execute(
+            """
+            INSERT INTO daily_checkin (user_id, last_day, streak)
+            VALUES ((SELECT id FROM users WHERE tg_id=?), ?, ?)
+            """,
+            (tg_id, today, 1),
+        )
         reward = 20
     else:
         _, last_day, streak = row
@@ -198,10 +239,15 @@ async def checkin(cq: types.CallbackQuery):
         else:
             streak = 1
         reward = 20 + streak * 5
-        cur.execute("UPDATE daily_checkin SET last_day=?, streak=? WHERE user_id=(SELECT id FROM users WHERE tg_id=?)",
-                    (today, streak, tg_id))
+        cur.execute(
+            "UPDATE daily_checkin SET last_day=?, streak=? WHERE user_id=(SELECT id FROM users WHERE tg_id=?)",
+            (today, streak, tg_id),
+        )
 
-    cur.execute("UPDATE users SET black_oil = black_oil + ? WHERE tg_id=?", (reward, tg_id))
+    cur.execute(
+        "UPDATE users SET black_oil = black_oil + ? WHERE tg_id=?",
+        (reward, tg_id),
+    )
     con.commit()
     con.close()
 
