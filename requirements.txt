@@ -1,3 +1,4 @@
 python-telegram-bot==21.10
 fastapi==0.115.0
 uvicorn[standard]==0.30.0
+supervisor==4.2.5
