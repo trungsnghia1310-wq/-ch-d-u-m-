@@ -2,7 +2,7 @@ app = "chdum"
 primary_region = "sin"
 
 [build]
-  image = "python:3.12-slim"
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "8000"
